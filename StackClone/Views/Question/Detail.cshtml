@@ -1,0 +1,33 @@
+@model StackClone.Models.Answer
+
+@{
+    ViewData["Title"] = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Question.Title</h2>
+
+
+
+<h3>@ViewBag.Question.Content</h3>
+
+<h3>@ViewBag.Question.Votes</h3>
+
+
+@foreach(var answer in ViewBag.Question.Answers)
+{
+<hr />
+<h3>@answer.Content</h3>
+}
+
+@using (Html.BeginForm("CreateAnswer", "Question"))
+{
+
+@Html.LabelFor(model => model.Content)
+@Html.TextAreaFor(model => model.Content, new {@cols="80" , @rows="4" })
+
+@Html.HiddenFor(model => model.QuestionId);
+<input type="submit" value="Post Answer" />
+}
+
+@Html.ActionLink("Back to List", "Index")

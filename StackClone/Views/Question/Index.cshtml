@@ -8,17 +8,19 @@
 
 @model IEnumerable<StackClone.Models.Question>
 
-    <h2>Here is your list of questions, @User.Identity.Name you stupid dummy</h2>
-    <hr />
+<h2>Here is your list of questions, @User.Identity.Name</h2>
+<hr />
 
-    @if (Model.Any())
+@if (Model.Any())
 {
     <ul>
         @foreach (var listQuestion in Model)
         {
-        <li>@Html.DisplayFor(modelQuestion => listQuestion.Content)</li>
+        <li>
+            @Html.ActionLink(@listQuestion.Title, "Detail", new {id = listQuestion.QuestionId})
+        </li>
         }
-    </ul>
+</ul>
 }
 else
 {

@@ -124,20 +124,22 @@ namespace StackClone.Migrations
 
             modelBuilder.Entity("StackClone.Models.Answer", b =>
                 {
-                    b.Property<string>("Content")
+                    b.Property<int>("AnswerId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("QuestionContent");
+                    b.Property<string>("Content");
 
                     b.Property<int>("QuestionId");
 
-                    b.Property<int>("UserId");
+                    b.Property<string>("UserId");
 
                     b.Property<int>("Votes");
 
-                    b.HasKey("Content");
+                    b.HasKey("AnswerId");
 
-                    b.HasIndex("QuestionContent");
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Answers");
                 });
@@ -194,14 +196,18 @@ namespace StackClone.Migrations
 
             modelBuilder.Entity("StackClone.Models.Question", b =>
                 {
-                    b.Property<string>("Content")
+                    b.Property<int>("QuestionId")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Content");
+
+                    b.Property<string>("Title");
 
                     b.Property<string>("UserId");
 
                     b.Property<int>("Votes");
 
-                    b.HasKey("Content");
+                    b.HasKey("QuestionId");
 
                     b.HasIndex("UserId");
 
@@ -249,7 +255,12 @@ namespace StackClone.Migrations
                 {
                     b.HasOne("StackClone.Models.Question")
                         .WithMany("Answers")
-                        .HasForeignKey("QuestionContent");
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("StackClone.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("StackClone.Models.Question", b =>

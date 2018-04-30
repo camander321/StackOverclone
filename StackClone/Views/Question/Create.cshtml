@@ -9,9 +9,12 @@
 <hr />
 @using (Html.BeginForm())
 {
-    @Html.LabelFor(model => model.Content)
-    @Html.EditorFor(model => model.Content)
-    <input type="submit" value="Create" />
+@Html.LabelFor(model => model.Title)
+@Html.EditorFor(model => model.Title)
+
+@Html.LabelFor(model => model.Content)
+@Html.TextAreaFor(model => model.Content, new {@cols="80" , @rows="4" })
+<input type="submit" value="Create" />
 }
 
 @Html.ActionLink("Back to List", "Index")

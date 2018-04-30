@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using StackClone.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace StackClone.Controllers
@@ -22,7 +23,7 @@ namespace StackClone.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUser = await _userManager.FindByIdAsync(userId);
             return View(_db.Questions.Where(x => x.User.Id == currentUser.Id));
         }
@@ -35,7 +36,7 @@ namespace StackClone.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Question question)
         {
-            var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var currentUser = await _userManager.FindByIdAsync(userId);
             question.User = currentUser;
             _db.Questions.Add(question);
@@ -43,5 +44,18 @@ namespace StackClone.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult Detail(int id)
+        {
+            ViewBag.Question = _db.Questions.Include(q => q.Answers).FirstOrDefault(x => x.QuestionId == id);
+            return View(new Answer() { QuestionId = id });
+        }
+
+        [HttpPost]
+        public IActionResult CreateAnswer(Answer answer)
+        {
+            _db.Answers.Add(answer);
+            _db.SaveChanges();
+            return RedirectToAction("Detail", new { id = answer.QuestionId });
+        }
     }
 }

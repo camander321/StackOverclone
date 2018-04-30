@@ -8,8 +8,8 @@ using StackClone.Models;
 namespace StackClone.Migrations
 {
     [DbContext(typeof(StackDbContext))]
-    [Migration("20180430163653_Initial")]
-    partial class Initial
+    [Migration("20180430215137_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -125,20 +125,22 @@ namespace StackClone.Migrations
 
             modelBuilder.Entity("StackClone.Models.Answer", b =>
                 {
-                    b.Property<string>("Content")
+                    b.Property<int>("AnswerId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("QuestionContent");
+                    b.Property<string>("Content");
 
                     b.Property<int>("QuestionId");
 
-                    b.Property<int>("UserId");
+                    b.Property<string>("UserId");
 
                     b.Property<int>("Votes");
 
-                    b.HasKey("Content");
+                    b.HasKey("AnswerId");
 
-                    b.HasIndex("QuestionContent");
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Answers");
                 });
@@ -195,14 +197,20 @@ namespace StackClone.Migrations
 
             modelBuilder.Entity("StackClone.Models.Question", b =>
                 {
-                    b.Property<string>("Content")
+                    b.Property<int>("QuestionId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("UserId");
+                    b.Property<string>("Content");
+
+                    b.Property<string>("Title");
+
+                    b.Property<string>("UserId");
 
                     b.Property<int>("Votes");
 
-                    b.HasKey("Content");
+                    b.HasKey("QuestionId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Questions");
                 });
@@ -248,7 +256,19 @@ namespace StackClone.Migrations
                 {
                     b.HasOne("StackClone.Models.Question")
                         .WithMany("Answers")
-                        .HasForeignKey("QuestionContent");
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("StackClone.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("StackClone.Models.Question", b =>
+                {
+                    b.HasOne("StackClone.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
         }
     }

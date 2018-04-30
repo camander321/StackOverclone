@@ -10,11 +10,11 @@ namespace StackClone.Models
     public class Answer
     {
         [Key]
+        public int AnswerId { get; set; }
         public string Content { get; set; }
         public int Votes { get; set; }
         [ForeignKey("Questions")]
         public int QuestionId { get; set; }
-        //[ForeignKey("Users")]
-        public int UserId { get; set; }
+        public virtual AppUser User { get; set; }
     }
 }

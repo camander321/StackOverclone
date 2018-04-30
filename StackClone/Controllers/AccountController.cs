@@ -34,7 +34,7 @@ namespace StackClone.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            AppUser user = new AppUser { UserName = model.Email };
+            AppUser user = new AppUser { UserName = model.UserName, Email = model.Email };
             IdentityResult result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
                 return RedirectToAction("Index");
