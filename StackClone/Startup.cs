@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using StackClone.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace StackClone
 {
@@ -29,6 +32,23 @@ namespace StackClone
         {
             // Add framework services.
             services.AddMvc();
+            services.AddEntityFrameworkMySql()
+                    .AddDbContext<StackDbContext>(options =>
+                                              options
+                                                   .UseMySql(Configuration["ConnectionStrings:DefaultConnection"]));
+
+            // This is new
+            services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<StackDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddIdentity<AppUser, IdentityRole>(options =>
+            {
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 0;
+                options.Password.RequireDigit = false;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,11 +69,14 @@ namespace StackClone
 
             app.UseStaticFiles();
 
+            //This is new
+            app.UseIdentity();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Account}/{action=Index}/{id?}");
             });
         }
     }
